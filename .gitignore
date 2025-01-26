@@ -10,7 +10,7 @@ env/
 .env.local
 .env.development
 .env.production
-
+__pycache__/
 # Ignoruj pliki Pythona
 __pycache__/
 *.py[cod]
