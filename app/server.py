@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 import os
 from fastapi import FastAPI, File, UploadFile
 import uvicorn
@@ -7,9 +6,8 @@ from PyPDF2 import PdfReader
 from model.rag import RAG
 from model.vector_store import VectorStore
 
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
 
 rag = None
 vc = None
@@ -19,7 +17,6 @@ app = FastAPI()
 @app.on_event("startup")
 def init():
     global vc, rag
-    load_dotenv()
     print(DEEPSEEK_API_KEY)
     vc = VectorStore(api_key=OPENAI_API_KEY)
     rag = RAG(api=DEEPSEEK_API_KEY, vector_store=vc)
