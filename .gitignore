@@ -1,0 +1,58 @@
+# Ignoruj pliki i katalogi systemowe
+.DS_Store
+Thumbs.db
+
+# Ignoruj środowiska wirtualne Pythona
+venv/
+env/
+*.env
+.env/
+.env.local
+.env.development
+.env.production
+
+# Ignoruj pliki Pythona
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+*.log
+*.sqlite3
+*.pyc
+
+# Ignoruj node_modules (dla React + Vite)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignoruj artefakty budowania frontendu
+/dist/
+/build/
+/out/
+/.vite/
+/.cache/
+
+# Ignoruj pliki konfiguracyjne IDE
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Ignoruj pliki TypeScript
+*.tsbuildinfo
+
+# Ignoruj pliki testowe i raporty
+/coverage/
+/junit.xml
+/.nyc_output/
+
+# Ignoruj pliki specyficzne dla projektu
+*.local
+*.bak
+*.tmp
