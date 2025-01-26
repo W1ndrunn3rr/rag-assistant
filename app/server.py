@@ -5,6 +5,8 @@ import io
 from PyPDF2 import PdfReader
 from model.rag import RAG
 from model.vector_store import VectorStore
+from fastapi.middleware.cors import CORSMiddleware
+
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
@@ -12,6 +14,14 @@ DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
 rag = None
 vc = None
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")
