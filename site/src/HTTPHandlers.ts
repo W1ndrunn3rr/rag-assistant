@@ -1,21 +1,23 @@
 export async function handleSubmit(message: string) {
-    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/invoke`;
+    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/invoke?message=${encodeURIComponent(message)}`;
+
     try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: 'POST', // Metoda POST
             headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message: message })
+                'Content-Type': 'application/json' // Można zachować, nawet jeśli body jest puste
+            }
         });
+
         if (response.ok) {
-            const data = await response.json();
+            const data = await response.json(); // Parsowanie odpowiedzi jako JSON
             return data;
         } else {
-            throw new Error('Request failed');
+            throw new Error(`Request failed with status ${response.status}`);
         }
     } catch (error) {
-        console.error(error);
+        console.error('Error:', error);
+        throw error; // Rzucenie błędu, aby można było go obsłużyć w miejscu wywołania funkcji
     }
 }
 
