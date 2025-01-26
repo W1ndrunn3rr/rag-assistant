@@ -8,9 +8,9 @@ function App() {
 
 
   return (
-    <div className="w-50 mx-auto d-flex flex-column justify-content-center align-items-center mt-5">
+    <div className="w-50 mx-auto d-flex flex-column justify-content-center align-items-center mt-4">
       {/* Dodaj napis PDF RAG Assistant */}
-      <h1 className="text-center" style={{ fontSize: '3rem', fontWeight: 'bold', color: '#2c3e50' }}>
+      <h1 className="text-center" style={{ fontSize: '45px', fontWeight: 'bold', color: '#2c3e50' }}>
         PDF RAG Assistant
       </h1>
 
