@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { TextField, Button, Box, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { TextField, Button, Box, Grid, useMediaQuery, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from "@mui/material";
 import { handleSubmit } from "./HTTPHandlers";
 import parse from "html-react-parser";
 
@@ -11,6 +11,7 @@ type Message = {
 export function ChatPrompt({ uploading }: { uploading: boolean }) {
     const [text, setText] = useState("");
     const [conversation, setConversation] = useState<Message[]>([]);
+    const [openDialog, setOpenDialog] = useState(true); // Stan do kontrolowania widoczności okienka z instrukcją
     const chatRef = useRef<HTMLDivElement | null>(null);
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -23,7 +24,7 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
         setText("");
         addMessage({ content: text, type: "You" });
         addMessage({ content: await handleSubmit(text), type: "AI" });
-    }
+    };
 
     useEffect(() => {
         if (chatRef.current) {
@@ -37,10 +38,39 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
                 display: "flex",
                 flexDirection: "column",
                 p: isSmallScreen ? 2 : 5,
-                m: isSmallScreen ? 1 : 3,
+                m: isSmallScreen ? 1 : 0,
                 height: "80vh",
             }}
         >
+            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+                <DialogTitle>Welcome to PDF RAG Assistant!</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1" sx={{ mb: 2 }}>
+                        Here’s how to use this app:
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                        1. <strong>Upload a PDF</strong> using the uploader below.
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                        2. <strong>Ask questions</strong> about the content of the PDF in the chat.
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                        3. The AI will analyze the PDF and provide answers based on its content.
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                        4. You can also type general questions, and the AI will respond accordingly.
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 2 }}>
+                        5. Enjoy exploring the power of AI! 🚀
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)} color="primary">
+                        Got it!
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             {/* Chat Container */}
             <Box
                 ref={chatRef}
@@ -71,13 +101,12 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
                         fullWidth
                         multiline
                         rows={1}
-                        placeholder="Dear GPT..."
+                        placeholder="Ask a question..."
                         variant="outlined"
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         onKeyDown={(e) => {
-
-                            if (e.key == "Enter" && uploading) handleSend()
+                            if (e.key == "Enter" && uploading) handleSend();
                         }}
                         sx={{ bgcolor: "background.paper" }}
                     />
@@ -89,14 +118,13 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
                         color="primary"
                         size="large"
                         disabled={!uploading || text.length === 0}
-                        onClick={async () => handleSend()
-                        }
+                        onClick={handleSend}
                         sx={{ height: "100%" }}
                     >
                         Submit
                     </Button>
                 </Grid>
             </Grid>
-        </Box >
+        </Box>
     );
 }

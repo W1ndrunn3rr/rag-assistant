@@ -8,11 +8,19 @@ function App() {
 
 
   return (
-    <div className="w-50 mx-auto justify-content-center align-items-center">
-      <ChatPrompt uploading={uploading} />
-      <PDFUploader setUploading={setUploading} />
-    </div>)
+    <div className="w-50 mx-auto d-flex flex-column justify-content-center align-items-center mt-5">
+      {/* Dodaj napis PDF RAG Assistant */}
+      <h1 className="text-center" style={{ fontSize: '3rem', fontWeight: 'bold', color: '#2c3e50' }}>
+        PDF RAG Assistant
+      </h1>
 
+      {/* Komponenty w kolumnie */}
+      <div className="d-flex flex-column gap-3 w-100">
+        <ChatPrompt uploading={uploading} />
+        <PDFUploader setUploading={setUploading} />
+      </div>
+    </div>
+  );
 }
 
 export default App
