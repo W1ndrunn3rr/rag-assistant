@@ -15,16 +15,8 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-    useEffect(() => {
-        const localConversation = localStorage.getItem("conversation");
-        if (localConversation) {
-            setConversation(JSON.parse(localConversation));
-        }
-    }, []);
-
     const addMessage = (newMessage: Message) => {
         setConversation((prevConversation) => [...prevConversation, newMessage]);
-        localStorage.setItem("conversation", JSON.stringify([...conversation, newMessage]));
     };
 
     const handleSend = async () => {
