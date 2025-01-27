@@ -17,7 +17,15 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
     const addMessage = (newMessage: Message) => {
-        setConversation((prevConversation) => [...prevConversation, newMessage]);
+
+        const storedConversation = localStorage.getItem("conversation");
+        const prevConversation = storedConversation ? JSON.parse(storedConversation) : [];
+
+        const updatedConversation = [...prevConversation, newMessage];
+
+        localStorage.setItem("conversation", JSON.stringify(updatedConversation));
+
+        setConversation(updatedConversation);
     };
 
     const handleSend = async () => {
@@ -31,6 +39,15 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
             chatRef.current.scrollTop = chatRef.current.scrollHeight;
         }
     }, [conversation]);
+
+    useEffect(() => {
+
+        const storedConversation = localStorage.getItem("conversation");
+        if (storedConversation) {
+            setConversation(JSON.parse(storedConversation));
+        }
+    }, []);
+
 
     return (
         <Box
@@ -62,6 +79,9 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 2 }}>
                         5. Enjoy exploring the power of AI! 🚀
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 2 }}>
+                        Try not to upload huge PDFS ( more than 5mb ), because it will take a lot of time to convert it :)
                     </Typography>
                 </DialogContent>
                 <DialogActions>

@@ -17,7 +17,7 @@ function App() {
       {/* Komponenty w kolumnie */}
       <div className="d-flex flex-column gap-3 w-100">
         <ChatPrompt uploading={uploading} />
-        <PDFUploader setUploading={setUploading} />
+        <PDFUploader uploading={uploading} setUploading={setUploading} />
       </div>
     </div>
   );
