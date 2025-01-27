@@ -7,7 +7,7 @@ async function getBrowserFingerPrint() {
 }
 
 export async function handleSubmit(message: string) {
-    const url = `http://localhost:8000/invoke?message=${encodeURIComponent(message)}`;
+    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/invoke?message=${encodeURIComponent(message)}`;
 
     try {
         const response = await fetch(url, {
@@ -34,7 +34,7 @@ export async function handleFileUpload(file: File) {
     formData.append('pdf', file);
 
     const fingerPrint = await getBrowserFingerPrint();
-    const url = `http://localhost:8000/upload?fingerPrint=${fingerPrint}`;
+    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/upload?fingerPrint=${fingerPrint}`;
     try {
         const response = await fetch(url, {
             method: 'POST',
