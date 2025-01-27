@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { TextField, Button, Box, Grid, useMediaQuery, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from "@mui/material";
+import { TextField, Button, Box, Grid, useMediaQuery, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, Typography, CircularProgress } from "@mui/material";
 import { handleSubmit } from "./HTTPHandlers";
 import parse from "html-react-parser";
 
@@ -15,7 +15,7 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
     const chatRef = useRef<HTMLDivElement | null>(null);
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
+    const [isLoading, setIsLoading] = useState(false);
     const addMessage = (newMessage: Message) => {
 
         const storedConversation = localStorage.getItem("conversation");
@@ -31,8 +31,19 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
     const handleSend = async () => {
         setText("");
         addMessage({ content: text, type: "You" });
-        addMessage({ content: await handleSubmit(text), type: "AI" });
+        setIsLoading(true);
+        try {
+            let aiMessage = await handleSubmit(text);
+            if (aiMessage) {
+                addMessage({ content: aiMessage, type: "AI" });
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
+
 
     useEffect(() => {
         if (chatRef.current) {
@@ -106,12 +117,17 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
                     height: "50vh",
                 }}
             >
-                {conversation.map((msg, index) => (
-                    <Box key={index} sx={{ mb: 2 }}>
-                        <h4>{msg.type}</h4>
-                        {parse(msg.content)}
-                    </Box>
-                ))}
+                {
+                    conversation.map((msg, index) => (
+                        <Box key={index} sx={{ mb: 2 }}>
+                            <h4>{msg.type}</h4>
+                            {parse(msg.content)}
+                        </Box>
+                    ))
+                }
+                {
+                    isLoading ? <CircularProgress /> : null
+                }
             </Box>
 
             {/* Input Area */}
@@ -143,6 +159,7 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
                     >
                         Submit
                     </Button>
+
                 </Grid>
             </Grid>
         </Box>

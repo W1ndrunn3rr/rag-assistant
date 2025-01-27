@@ -27,7 +27,7 @@ app.add_middleware(
 @app.on_event("startup")
 def init():
     global vc, rag
-    print(DEEPSEEK_API_KEY)
+    print(OPENAI_API_KEY)
     vc = VectorStore(api_key=OPENAI_API_KEY)
     rag = RAG(api=DEEPSEEK_API_KEY, vector_store=vc)
 
@@ -44,7 +44,10 @@ async def invoke(message: str):
 
 
 @app.post("/upload")
-async def upload_pdf(pdf: UploadFile = File(...)):
+async def upload_pdf(
+    fingerPrint: str,
+    pdf: UploadFile = File(...),
+):
     pdf_text: str = ""
     if not pdf.filename.endswith(".pdf"):
         return {"error": "File must be a PDF"}
@@ -57,8 +60,7 @@ async def upload_pdf(pdf: UploadFile = File(...)):
         pdf_text += page.extract_text()
 
     vc.make_embedding(pdf_text)
-
-    return {"uploaded": True}
+    return {"uploaded": True, "fingerPrint": fingerPrint}
 
 
 def start():

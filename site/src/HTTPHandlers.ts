@@ -1,5 +1,13 @@
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
+
+async function getBrowserFingerPrint() {
+    const fp = await FingerprintJS.load()
+    const result = await fp.get();
+    return result.visitorId;
+}
+
 export async function handleSubmit(message: string) {
-    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/invoke?message=${encodeURIComponent(message)}`;
+    const url = `http://localhost:8000/invoke?message=${encodeURIComponent(message)}`;
 
     try {
         const response = await fetch(url, {
@@ -24,7 +32,9 @@ export async function handleSubmit(message: string) {
 export async function handleFileUpload(file: File) {
     const formData = new FormData();
     formData.append('pdf', file);
-    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/upload`;
+
+    const fingerPrint = await getBrowserFingerPrint();
+    const url = `http://localhost:8000/upload?fingerPrint=${fingerPrint}`;
     try {
         const response = await fetch(url, {
             method: 'POST',
