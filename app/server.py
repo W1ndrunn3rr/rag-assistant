@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
+UBERSECRETKEY = os.environ.get("UBER_SECRET_KEY")
 
 rag = None
 vc = None
@@ -38,7 +39,9 @@ async def root():
 
 
 @app.post("/invoke")
-async def invoke(message: str):
+async def invoke(message: str, secret: str):
+    if secret != UBERSECRETKEY:
+        return {"error": "Unauthorized"}
     rag_answer = rag.invoke(message, "123")
     return rag_answer
 
