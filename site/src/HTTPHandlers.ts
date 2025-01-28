@@ -1,5 +1,6 @@
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
-import 'dotenv/config'
+
+
 
 async function getBrowserFingerPrint() {
     const fp = await FingerprintJS.load()
@@ -8,7 +9,7 @@ async function getBrowserFingerPrint() {
 }
 
 export async function handleSubmit(message: string) {
-    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/invoke?message=${encodeURIComponent(message)}?secretKey=${process.env.UBER_SECRET_KEY}`;
+    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/invoke?message=${encodeURIComponent(message)}&secret=${import.meta.env.VITE_UBER_SECRET_KEY}`;
 
     try {
         const response = await fetch(url, {
