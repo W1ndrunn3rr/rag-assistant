@@ -15,6 +15,8 @@
     "@fingerprintjs/fingerprintjs": "^4.5.1",
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.1",
+    "@vercel/functions": "^1.5.2",
+    "ai": "^4.1.10",
     "bootstrap": "^5.3.3",
     "html-react-parser": "^5.2.2",
     "material-ui-popup-state": "^5.3.3",
