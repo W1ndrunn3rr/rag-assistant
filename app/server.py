@@ -39,9 +39,7 @@ async def root():
 
 
 @app.post("/invoke")
-async def invoke(message: str, secret: str):
-    if secret != UBERSECRETKEY:
-        return {"error": "Unauthorized"}
+async def invoke(message: str):
     rag_answer = rag.invoke(message, "123")
     return rag_answer
 
