@@ -19,7 +19,11 @@ vc = None
 database = Database()
 app = FastAPI()
 
-origins = ["https://rag-assistant.vercel.app", "http://localhost:5173"]
+origins = [
+    "https://rag-assistant.vercel.app",
+    "http://localhost:5173",
+    "localhost:3000",
+]
 
 app.add_middleware(
     CORSMiddleware,
