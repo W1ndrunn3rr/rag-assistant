@@ -83,4 +83,4 @@ async def get_chat_history(user_id: str):
 
 
 def start():
-    uvicorn.run("app.server:app", host="0.0.0.0", port=5000, reload=True)
+    uvicorn.run("app.server:app", host="0.0.0.0", port=8000, reload=True)

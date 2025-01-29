@@ -15,7 +15,7 @@ async function getBrowserFingerPrint() {
 export async function handleSubmit(message: string) {
 
     const fingerprint = await getBrowserFingerPrint();
-    const url = `http://localhost:5000/invoke?message=${encodeURIComponent(message)}&finger_print=${fingerprint}`;
+    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/invoke?message=${encodeURIComponent(message)}&finger_print=${fingerprint}`;
 
     try {
         const response = await fetch(url, {
@@ -40,7 +40,7 @@ export async function handleFileUpload(file: File) {
     formData.append('pdf', file);
 
     const fingerPrint = await getBrowserFingerPrint();
-    const url = `http://localhost:5000/upload?finger_print=${fingerPrint}`;
+    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/upload?finger_print=${fingerPrint}`;
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -57,7 +57,7 @@ export async function handleFileUpload(file: File) {
 }
 
 export async function saveMessage(message: ChatType) {
-    const url = `http://localhost:5000/save_message`;
+    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/save_message`;
 
     try {
         const fingerprint = await getBrowserFingerPrint();
@@ -87,7 +87,7 @@ export async function saveMessage(message: ChatType) {
 
 export async function getChatHistory(): Promise<Array<ChatType> | null> {
     const fingerprint = await getBrowserFingerPrint()
-    const url = `http://localhost:5000/get_chat_history/${fingerprint}`;
+    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/get_chat_history/${fingerprint}`;
     try {
         const response = await fetch(url, {
             method: 'GET',
