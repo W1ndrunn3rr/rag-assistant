@@ -6,6 +6,7 @@ COPY README.md /code/README.md
 
 COPY ./app /code/app
 COPY ./model /code/model
+COPY ./database /code/database
 
 RUN pip install --no-cache-dir poetry
 RUN poetry install 
