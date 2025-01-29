@@ -6,7 +6,6 @@ function App() {
 
   const [uploading, setUploading] = useState(false);
 
-
   return (
     <div className="w-50 mx-auto d-flex flex-column justify-content-center align-items-center mt-4">
       {/* Dodaj napis PDF RAG Assistant */}

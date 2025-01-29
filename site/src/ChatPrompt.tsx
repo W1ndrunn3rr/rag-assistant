@@ -1,8 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { TextField, Button, Box, Grid, useMediaQuery, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, Typography, CircularProgress } from "@mui/material";
-import { handleSubmit } from "./HTTPHandlers";
+import { handleSubmit, getChatHistory, saveMessage } from "./HTTPHandlers";
 import parse from "html-react-parser";
-
 type Message = {
     content: string;
     type: "AI" | "You";
@@ -11,31 +10,25 @@ type Message = {
 export function ChatPrompt({ uploading }: { uploading: boolean }) {
     const [text, setText] = useState("");
     const [conversation, setConversation] = useState<Message[]>([]);
-    const [openDialog, setOpenDialog] = useState(true); // Stan do kontrolowania widoczności okienka z instrukcją
+    const [openDialog, setOpenDialog] = useState(true);
     const chatRef = useRef<HTMLDivElement | null>(null);
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const [isLoading, setIsLoading] = useState(false);
-    const addMessage = (newMessage: Message) => {
 
-        const storedConversation = localStorage.getItem("conversation");
-        const prevConversation = storedConversation ? JSON.parse(storedConversation) : [];
-
-        const updatedConversation = [...prevConversation, newMessage];
-
-        localStorage.setItem("conversation", JSON.stringify(updatedConversation));
-
-        setConversation(updatedConversation);
-    };
+    const addMessage = useCallback((message: Message) => {
+        setConversation((prevMessages) => [...prevMessages, message]);
+    }, []);
 
     const handleSend = async () => {
         setText("");
         addMessage({ content: text, type: "You" });
         setIsLoading(true);
         try {
-            let aiMessage = await handleSubmit(text);
+            const aiMessage = await handleSubmit(text);
             if (aiMessage) {
                 addMessage({ content: aiMessage, type: "AI" });
+                await saveMessage({ "user_id": "1", "message": text, "response": aiMessage })
             }
         } catch (error) {
             console.error("Error:", error);
@@ -44,7 +37,6 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
         }
     };
 
-
     useEffect(() => {
         if (chatRef.current) {
             chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -52,11 +44,28 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
     }, [conversation]);
 
     useEffect(() => {
+        let isMounted = true;
+        const getHistory = async () => {
+            try {
 
-        const storedConversation = localStorage.getItem("conversation");
-        if (storedConversation) {
-            setConversation(JSON.parse(storedConversation));
+                const history = await getChatHistory()
+
+
+                if (isMounted && Array.isArray(history)) {
+                    history?.map((user_input) => {
+                        addMessage({ content: user_input.message, type: "You" })
+                        addMessage({ content: user_input.response, type: "AI" })
+                    })
+                }
+            } catch (error) {
+                console.error("Error: ", error)
+            }
+
         }
+        getHistory()
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
 
@@ -153,7 +162,7 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
                         variant="contained"
                         color="primary"
                         size="large"
-                        disabled={!uploading || text.length === 0}
+                        disabled={!uploading || text.length === 0 || isLoading}
                         onClick={handleSend}
                         sx={{ height: "100%" }}
                     >
