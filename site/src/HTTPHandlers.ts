@@ -1,6 +1,6 @@
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
-const adress = 'http://localhost:8000'
+const adress = 'https://rag-assistant-api-754277840579.europe-central2.run.app'
 
 type ChatType = {
     user_id: string
@@ -111,20 +111,20 @@ export async function getChatHistory(): Promise<Array<ChatType> | null> {
     return null
 }
 
-export async function deleteChatHistory() : Promise<void> {
+export async function deleteChatHistory(): Promise<void> {
     const fingerprint = await getBrowserFingerPrint()
     const url = `${adress}/delete_chat_history/${fingerprint}`;
     try {
-        const response = await fetch (url, {
-            method : "DELETE",
-            headers : {
-                "Content-Type" : "application/json"
+        const response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
             }
         })
-         if (!response.ok) {
+        if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-    }catch (e){
+    } catch (e) {
         console.error("Error content: ", e)
     }
 }

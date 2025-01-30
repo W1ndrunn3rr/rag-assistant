@@ -7,10 +7,10 @@ type Message = {
     type: "AI" | "You";
 };
 
-export function ChatPrompt({uploading, conversation, setConversation}: {
+export function ChatPrompt({ uploading, conversation, setConversation }: {
     uploading: boolean,
-    conversation : Array<Message>,
-    setConversation?: (value: (((prevState: Message[]) => Message[]) | Message[])) => void
+    conversation: Array<Message>,
+    setConversation?: (value: ((prevState: Message[]) => Message[]) | Message[]) => void
 }) {
     const [text, setText] = useState("");
     const [openDialog, setOpenDialog] = useState(true);

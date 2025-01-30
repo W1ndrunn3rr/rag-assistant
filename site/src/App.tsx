@@ -2,15 +2,17 @@ import { UploadClearButtons } from './UploadClearButtons.tsx'
 import { ChatPrompt } from './ChatPrompt.tsx'
 import { useState } from 'react';
 
-type UserMessage = {
-    content: string;
-    type: "AI" | "You";
+type Message = {
+  content: string;
+  type: "AI" | "You";
 };
+
+
 function App() {
 
   const [uploading, setUploading] = useState(false);
-  const [conversation, setConversation] = useState<UserMessage[]>([]);
-    return (
+  const [conversation, setConversation] = useState<Message[]>([]);
+  return (
     <div className="w-50 mx-auto d-flex flex-column justify-content-center align-items-center mt-4">
       <h1 className="text-center" style={{ fontSize: '45px', fontWeight: 'bold', color: '#2c3e50' }}>
         PDF RAG Assistant
