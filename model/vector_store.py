@@ -4,7 +4,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 class VectorStore:
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, user_id : str):
         self.embeddings = OpenAIEmbeddings(
             model="text-embedding-3-small",
             api_key=api_key,
@@ -12,6 +12,7 @@ class VectorStore:
         self.vector_store = InMemoryVectorStore(
             embedding=self.embeddings,
         )
+        self.user_id = user_id
 
     def make_embedding(self, text: str):
         splitter = RecursiveCharacterTextSplitter(

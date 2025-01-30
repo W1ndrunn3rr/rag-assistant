@@ -7,9 +7,12 @@ type Message = {
     type: "AI" | "You";
 };
 
-export function ChatPrompt({ uploading }: { uploading: boolean }) {
+export function ChatPrompt({uploading, conversation, setConversation}: {
+    uploading: boolean,
+    conversation : Array<Message>,
+    setConversation?: (value: (((prevState: Message[]) => Message[]) | Message[])) => void
+}) {
     const [text, setText] = useState("");
-    const [conversation, setConversation] = useState<Message[]>([]);
     const [openDialog, setOpenDialog] = useState(true);
     const chatRef = useRef<HTMLDivElement | null>(null);
     const theme = useTheme();
@@ -17,8 +20,8 @@ export function ChatPrompt({ uploading }: { uploading: boolean }) {
     const [isLoading, setIsLoading] = useState(false);
 
     const addMessage = useCallback((message: Message) => {
-        setConversation((prevMessages) => [...prevMessages, message]);
-    }, []);
+        setConversation!((prevMessages) => [...prevMessages, message]);
+    }, [setConversation]);
 
     const handleSend = async () => {
         setText("");

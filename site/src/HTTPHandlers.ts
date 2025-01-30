@@ -1,5 +1,7 @@
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
+const adress = 'http://localhost:8000'
+
 type ChatType = {
     user_id: string
     message: string
@@ -15,7 +17,7 @@ async function getBrowserFingerPrint() {
 export async function handleSubmit(message: string) {
 
     const fingerprint = await getBrowserFingerPrint();
-    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/invoke?message=${encodeURIComponent(message)}&finger_print=${fingerprint}`;
+    const url = `${adress}/invoke?message=${encodeURIComponent(message)}&finger_print=${fingerprint}`;
 
     try {
         const response = await fetch(url, {
@@ -40,7 +42,7 @@ export async function handleFileUpload(file: File) {
     formData.append('pdf', file);
 
     const fingerPrint = await getBrowserFingerPrint();
-    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/upload?finger_print=${fingerPrint}`;
+    const url = `${adress}/upload?finger_print=${fingerPrint}`;
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -57,7 +59,7 @@ export async function handleFileUpload(file: File) {
 }
 
 export async function saveMessage(message: ChatType) {
-    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/save_message`;
+    const url = `${adress}/save_message`;
 
     try {
         const fingerprint = await getBrowserFingerPrint();
@@ -87,7 +89,7 @@ export async function saveMessage(message: ChatType) {
 
 export async function getChatHistory(): Promise<Array<ChatType> | null> {
     const fingerprint = await getBrowserFingerPrint()
-    const url = `https://rag-assistant-api-754277840579.europe-central2.run.app/get_chat_history/${fingerprint}`;
+    const url = `${adress}/get_chat_history/${fingerprint}`;
     try {
         const response = await fetch(url, {
             method: 'GET',
@@ -107,4 +109,22 @@ export async function getChatHistory(): Promise<Array<ChatType> | null> {
         console.error("Fetching error: ", error)
     }
     return null
+}
+
+export async function deleteChatHistory() : Promise<void> {
+    const fingerprint = await getBrowserFingerPrint()
+    const url = `${adress}/delete_chat_history/${fingerprint}`;
+    try {
+        const response = await fetch (url, {
+            method : "DELETE",
+            headers : {
+                "Content-Type" : "application/json"
+            }
+        })
+         if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    }catch (e){
+        console.error("Error content: ", e)
+    }
 }

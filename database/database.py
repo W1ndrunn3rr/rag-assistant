@@ -60,3 +60,11 @@ class Database:
             )
 
         return chat_history
+
+    def delete_chat_history(self, user_id: str) -> None:
+        self.cursor.execute(
+            """
+            DELETE FROM chat_history WHERE user_id = ?
+            """, (user_id,)
+        )
+        self.connection.commit()

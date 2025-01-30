@@ -9,15 +9,24 @@ from fastapi.middleware.cors import CORSMiddleware
 from database.database import Database
 from pydantic import BaseModel
 from database.database import ChatMessage
+from typing import List
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
 UBER_SECRET_KEY = os.environ.get("UBER_SECRET_KEY")
 
+
 rag = None
-vc = None
+vector_store : List[VectorStore] = []
 database = Database()
 app = FastAPI()
+
+def find_user_vector_db(fingerprint: str) -> VectorStore | None:
+    for store in vector_store:
+        if store.user_id == fingerprint:
+            return store
+    return None
+
 
 origins = [
     "https://rag-assistant.vercel.app",
@@ -36,10 +45,9 @@ app.add_middleware(
 
 @app.on_event("startup")
 def init():
-    global vc, rag
-    vc = VectorStore(api_key=OPENAI_API_KEY)
-    rag = RAG(api=DEEPSEEK_API_KEY, vector_store=vc)
-
+    global rag
+    vc = VectorStore(api_key=DEEPSEEK_API_KEY, user_id="1")
+    rag = RAG(api=DEEPSEEK_API_KEY,vector_store=vc)
 
 @app.get("/")
 async def root():
@@ -48,12 +56,19 @@ async def root():
 
 @app.post("/invoke")
 async def invoke(message: str, finger_print: str):
-    rag_answer = rag.invoke(message, finger_print)
-    return rag_answer
-
-
+    if (store := find_user_vector_db(finger_print)) is not None:
+            rag.change_vector_store(store)
+            rag_answer = rag.invoke(message, finger_print)
+            return rag_answer
+    else:
+        new_vector_store = VectorStore(api_key=OPENAI_API_KEY, user_id=finger_print)
+        vector_store.append(new_vector_store)
+        rag.change_vector_store(new_vector_store)
+        rag_answer = rag.invoke(message, finger_print)
+        return rag_answer
 @app.post("/upload")
 async def upload_pdf(
+    finger_print: str,
     pdf: UploadFile = File(...),
 ):
     pdf_text: str = ""
@@ -67,7 +82,12 @@ async def upload_pdf(
     for page in reader.pages:
         pdf_text += page.extract_text()
 
-    vc.make_embedding(pdf_text)
+    if (store := find_user_vector_db(finger_print)) is not None:
+        store.make_embedding(pdf_text)
+    else :
+        new_vector_store = VectorStore(api_key=OPENAI_API_KEY, user_id=finger_print)
+        vector_store.append(new_vector_store)
+        new_vector_store.make_embedding(pdf_text)
     return {"uploaded": "success"}
 
 
@@ -84,6 +104,10 @@ async def get_chat_history(user_id: str):
     chat_history = database.get_chat_history(user_id)
     print(chat_history)
     return {"history": database.get_chat_history(user_id)}
+
+@app.delete("/delete_chat_history/{finger_print}")
+async def delete_chat_history(finger_print : str):
+    database.delete_chat_history(finger_print)
 
 
 def start():

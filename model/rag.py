@@ -81,6 +81,9 @@ class RAG:
         self.memory = MemorySaver()
         self.graph = self.generate_graph()
 
+    def change_vector_store(self, new_vector_store: VectorStore):
+        self.vector_store = new_vector_store
+
     def retrieve(self, state: State):
         retrieved_docs = self.vector_store.similarity_search(state["question"], k=2)
         return {"context": retrieved_docs}
