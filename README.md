@@ -34,7 +34,7 @@
 
 This project is not intended for local setup, as it is a hosted application. However, you can explore the live version by clicking the link below:
 
-[**Explore the RAG Assistant**](https://your-vercel-link-here) <!-- Replace with your Vercel deployment link -->
+[**Explore the RAG Assistant**](https://rag-assistant-ic0zjtvso-w1ndrunn3rrs-projects.vercel.app/) <!-- Replace with your Vercel deployment link -->
 
 ---
 
